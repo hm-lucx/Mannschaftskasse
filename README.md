@@ -1,37 +1,31 @@
 # Mannschaftskasse AI
 
-Digitale Spielerkasse für Fußballvereine.
+Football Player Fund Platform
 
-## Vision
+A modern web platform for football clubs that manages fines, training attendance, match attendance, team finances, and member administration.
 
-Spieler, Trainer und Kassierer sollen Strafen, Trainings,
-Spiele und Zahlungen zentral verwalten können.
+Core Features:
+- Fine management
+- Training calendar
+- Match calendar
+- Role-based access control
+- Authentication & authorization
+- Team treasury management
+- Optional payment integration
+- Audit and reporting
 
-## Geplante Funktionen
-
-- Spielerverwaltung
-- Strafenkatalog
-- Trainingstermine
-- Spieltermine
-- Rollen & Rechte
-- Authentifizierung
-- Zahlungsübersicht
-
-## Technologie
-
-Frontend:
-- ??
-
-Backend:
-- ASP.NET Core ??
-
-Datenbank:
-- PostgreSQL
-
-Deployment:
-- Docker
+Technology Stack:
+- ?? Frontend
+- (ASP.NET) Core Backend
+- PostgreSQL Database
+- GitHub
+- GitHub Copilot
 - GitHub Actions
+- Docker
 
-## Entwicklungsansatz
-
-AI-Assisted Development mit GitHub Copilot Agent Mode.
+Development Approach:
+- Scrum
+- GitHub Issues
+- Pull Requests
+- CI/CD
+- AI-assisted development
