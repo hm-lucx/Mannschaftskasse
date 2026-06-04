@@ -433,3 +433,76 @@ A web platform for football team organization and team treasury management (atte
 - Easy to deploy and run
 - Simple enough for student maintainability
 - Structured enough to extend with new features later
+
+---
+
+## 12. MVP QA Readiness Baseline (for AI Delivery)
+
+### 12.1 Definition of Ready (per issue/story)
+- Role impacted is explicit (ADMIN/COACH/PLAYER/TREASURER)
+- Preconditions and expected result are stated
+- Validation and error behavior are defined (status code + message envelope)
+- At least one happy-path and one edge case are specified
+
+### 12.2 Acceptance Test Cases (MVP)
+
+1. **AT-001 Player responds to event**
+   - Given a PLAYER has an open event response
+   - When the player declines
+   - Then `decline_reason` is mandatory and response is stored with timestamp
+   - And missing reason returns validation error (`400`)
+
+2. **AT-002 Coach visibility of attendance**
+   - Given responses exist for an event
+   - When a COACH opens the attendance overview
+   - Then accepted/declined/pending counts and decline reasons are visible
+   - And PLAYER role cannot access this endpoint (`403`)
+
+3. **AT-003 Fine assignment and player restriction**
+   - Given an ADMIN/COACH assigns a fine to a player
+   - When the PLAYER queries fines
+   - Then only own fines are returned
+   - And attempts to read other players' fines return `403`
+
+4. **AT-004 Payment reconciliation**
+   - Given a player has open fines
+   - When TREASURER records a payment allocation
+   - Then linked fines move to `PAID` only if total allocation covers amount
+   - And partial allocation keeps fine `OPEN`
+
+5. **AT-005 Deadline enforcement**
+   - Given event response deadline is exceeded
+   - When PLAYER updates response
+   - Then update is rejected (`409` or business validation error)
+   - And COACH/ADMIN override path is explicitly logged in AuditLog
+
+### 12.3 Integration Test Recommendations (minimum)
+- Auth integration: login, token refresh, logout invalidation
+- RBAC integration: endpoint matrix checks for all 4 roles
+- Finance integrity integration: fine-payment-link allocation and ledger append-only behavior
+- Attendance integration: deadline behavior + decline reason validation
+- Audit integration: sensitive actions (role change, fine edit, payment reconciliation) write immutable log entries
+
+### 12.4 Error Handling Contract (MVP)
+- Use one consistent error envelope:
+  - `code` (machine-readable)
+  - `message` (human-readable)
+  - `details` (field errors, optional)
+  - `correlationId`
+- Minimum mapped statuses:
+  - `400` validation errors
+  - `401` unauthenticated
+  - `403` unauthorized
+  - `404` entity not found
+  - `409` business rule conflict
+  - `429` rate limit
+  - `500` unexpected error (without leaking internals)
+
+---
+
+## 13. Open Questions Blocking Fully Autonomous AI MVP Build
+
+1. Is live standings web scraping mandatory for MVP runtime, or can it be deferred to scheduled sync/cached data?
+2. Should TREASURER be the only role allowed to create payments and ledger entries, or can ADMIN also perform these actions?
+3. Are players allowed to see team-wide payment history with identities, or only anonymized/aggregated values?
+4. Which GDPR retention window applies to attendance decline reasons and audit records?
