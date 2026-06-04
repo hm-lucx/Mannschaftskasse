@@ -2,12 +2,12 @@
 
 Football Player Fund Platform
 
-A modern web platform for football clubs that manages fines, training attendance, match attendance, team finances, and member administration.
+A modern web platform for football clubs that manages fines, training attendance, match attendance, and member administration.
 
 Core Features:
 - Fine management
-- Training calendar
-- Match calendar
+- Training calendar (possibility to accept or decline with reason)
+- Match calendar 
 - Role-based access control
 - Authentication & authorization
 - Team treasury management
