@@ -1,3 +1,446 @@
-Hier soll die technische Definition Beschrieben werden
+# Technical Design Document (TDD) — Mannschaftskasse
 
-//TODO
+## 0. Context and Constraints
+
+- **Project type**: 2-day university project (MVP-first)
+- **Primary goal**: Easy maintainability, easy deployment, easy extensibility
+- **Business scope**: Football team operations + team cash management (fines, payments, attendance, calendar, reporting)
+- **Future scope**: Potential SaaS for multiple clubs
+
+---
+
+## 1. Technology Evaluation and Decision Rationale
+
+### 1.1 Frontend Options
+
+| Option | Advantages | Disadvantages | Complexity | Learning Curve | Scalability | Maintainability |
+|---|---|---|---|---|---|---|
+| **Angular** | Strong structure, built-in patterns, enterprise-ready | Heavy for MVP, more boilerplate | High | High | High | High (for larger teams) |
+| **React** | Huge ecosystem, flexible, fast UI development | Needs framework choices (routing, state, forms) | Medium | Medium | High | Medium-High (with conventions) |
+| **Vue** | Very approachable, clean templates, fast onboarding | Smaller enterprise ecosystem than React | Low-Medium | Low | High | High |
+| **Blazor** | C# full-stack alignment | Smaller talent pool in many web teams, hosting/runtime trade-offs | Medium-High | Medium | Medium-High | Medium |
+| **Other (SvelteKit)** | Excellent DX, very fast UI | Smaller ecosystem for enterprise tooling | Low-Medium | Low | Medium-High | Medium |
+
+**Recommendation (MVP): `Vue 3 + TypeScript + Vite + Pinia + Vue Router`**
+- Fastest path for a small team and short timeline
+- Simple component model and low setup overhead
+- Good maintainability and extension potential
+
+---
+
+### 1.2 Backend Options
+
+| Option | Advantages | Disadvantages | Complexity | Learning Curve | Scalability | Maintainability |
+|---|---|---|---|---|---|---|
+| **ASP.NET Core** | Strong performance, robust security, great tooling | More setup overhead for rapid MVP if team not C#-centric | Medium | Medium | High | High |
+| **Spring Boot** | Mature ecosystem, enterprise-grade | Heavier footprint and boilerplate for short project | High | High | High | High |
+| **Node.js (Express)** | Very fast development, JS/TS full-stack reuse | Requires discipline for architecture | Low-Medium | Low | High | Medium |
+| **NestJS** | Structured Node framework, DI, modular design, good docs | Slightly more initial setup than plain Express | Medium | Medium | High | High |
+| **Django** | Batteries included, admin panel, strong ORM | Python stack split from JS frontend | Medium | Medium | High | High |
+| **Other (FastAPI)** | Very fast API development, strong typing | Smaller all-in-one ecosystem than Django | Low-Medium | Low | High | Medium-High |
+
+**Recommendation (MVP + growth): `NestJS + TypeScript`**
+- Balanced speed and structure
+- Clean module boundaries for future SaaS evolution
+- Shared language with frontend reduces cognitive load
+
+---
+
+### 1.3 Database Options
+
+| Option | Advantages | Disadvantages | Complexity | Learning Curve | Scalability | Maintainability |
+|---|---|---|---|---|---|---|
+| **PostgreSQL** | Rich features, strong integrity, JSON support, great for analytics/reporting | Slightly more operations knowledge than SQLite | Medium | Medium | High | High |
+| **MySQL** | Widely used, stable | Less feature-rich for advanced querying vs PostgreSQL | Medium | Medium | High | High |
+| **SQL Server** | Enterprise tooling and BI integration | Potential licensing/cost considerations | Medium-High | Medium | High | High |
+| **MongoDB** | Flexible schema, easy initial iteration | Harder relational consistency for finance + attendance rules | Medium | Medium | High | Medium |
+| **Other (SQLite)** | Extremely simple setup for MVP | Limited concurrency and scale | Low | Low | Low-Medium | Medium |
+
+**Recommendation: `PostgreSQL`**
+- Best fit for relational domain (users, teams, fines, payments, attendance)
+- Strong constraints for financial consistency and auditability
+
+---
+
+### 1.4 Deployment Options
+
+| Option | Advantages | Disadvantages | Complexity | Learning Curve | Scalability | Maintainability |
+|---|---|---|---|---|---|---|
+| **Docker** | Reproducible environments, easy local/prod parity | Requires basic container ops skills | Medium | Low-Medium | High | High |
+| **Kubernetes** | Powerful orchestration and scaling | Overkill for 2-day MVP, operationally heavy | High | High | Very High | Medium-High |
+| **Cloud PaaS (Render/Fly/Railway)** | Fast deployment, low ops burden | Less control than full Kubernetes | Low-Medium | Low | Medium-High | High |
+| **Netlify + API host split** | Frontend deployment very easy, aligns with project note | Requires separate backend hosting | Low | Low | Medium-High | High |
+
+**Recommendation**
+- Frontend: **Netlify**
+- Backend/API: **Render/Fly.io/Railway**
+- DB: **Managed PostgreSQL**
+- Packaging: **Docker (for backend)**
+- CI/CD: GitHub Actions
+
+---
+
+## 2. System Overview
+
+### Purpose
+A web platform for football team organization and team treasury management (attendance, fines, payments, and reporting).
+
+### Core Business Goals
+1. Reduce administrative overhead for coaches/admins
+2. Increase player accountability for responses and payments
+3. Ensure transparent, auditable team finances
+4. Provide actionable team statistics
+
+### Major Modules
+- Identity & Access
+- Team & Player Management
+- Calendar & Attendance
+- Fine Catalog & Fine Assignment
+- Cash Register & Payments
+- Notifications
+- Statistics & Reporting
+- Audit & Compliance
+
+### Architecture
+- **Frontend (Vue SPA)**: UI, workflows, dashboards, role-aware navigation
+- **Backend (NestJS API)**: business rules, authorization, integrations, reporting aggregation
+- **Database (PostgreSQL)**: source of truth, integrity constraints, audit trail
+
+---
+
+## 3. Roles and Permissions
+
+### Administrator
+- **Access**: full admin areas
+- **Actions**: manage users, roles, teams, fines, payments, settings
+- **Restrictions**: cannot bypass audit logging
+- **Data visibility**: all team financial and attendance data
+
+### Coach
+- **Access**: calendar, attendance, statistics, fine assignment
+- **Actions**: create/edit/cancel events, review attendance reasons, assign fines
+- **Restrictions**: no system-level user/role configuration
+- **Data visibility**: full attendance + relevant financial summaries
+
+### Player
+- **Access**: personal dashboard, own fines/payments, calendar participation
+- **Actions**: accept/decline events (decline requires reason), pay fines, view history
+- **Restrictions**: no management actions; only own personal financial details
+- **Data visibility**: own details + team-level aggregated summaries where allowed
+
+### Treasurer (Kassenwart)
+- **Access**: treasury and payment settings
+- **Actions**: configure payout/payee details, reconcile incoming payments, register manual income/expenses
+- **Restrictions**: no role administration
+- **Data visibility**: full financial data, limited attendance detail
+
+---
+
+## 4. Functional Modules
+
+1. **Authentication & Authorization**
+   - Login, session/JWT, RBAC, password reset
+2. **User Management**
+   - Create/edit/deactivate users, assign team/roles
+3. **Team Management**
+   - Team profile, season context, roster
+4. **Training & Match Calendar**
+   - Event CRUD, deadlines, event status
+5. **Attendance Management**
+   - Responses, decline reasons, reminders, coach overview
+6. **Fine Catalog**
+   - Category CRUD with amount and rules
+7. **Fine Management**
+   - Assign, edit, delete, status transitions
+8. **Team Cash Register**
+   - Ledger for income/expense and balances
+9. **Payment Management**
+   - Payment records, PayPal webhook reconciliation
+10. **Notifications**
+   - In-app + optional email reminders
+11. **Statistics & Reporting**
+   - Participation trends, fines/payment metrics, exports
+12. **Audit Logging (additional necessary module)**
+   - Immutable logs for sensitive operations
+13. **Configuration Module (additional)**
+   - Deadlines, currency, reminder cadence, feature toggles
+
+---
+
+## 5. Domain Model
+
+### Core Entities
+
+1. **User**
+   - PK: `id`
+   - Fields: first_name, last_name, email (unique), phone, address, birth_date, status, created_at
+
+2. **Role**
+   - PK: `id`
+   - Fields: name (ADMIN/COACH/PLAYER/TREASURER), description
+
+3. **UserRole** (many-to-many)
+   - PK: `id`
+   - FK: user_id → User.id, role_id → Role.id
+
+4. **Team**
+   - PK: `id`
+   - Fields: name, season, is_active
+
+5. **TeamMembership**
+   - PK: `id`
+   - FK: user_id, team_id
+   - Fields: joined_at, left_at, shirt_number
+
+6. **Event**
+   - PK: `id`
+   - FK: team_id, created_by_user_id
+   - Fields: type (TRAINING/MATCH/OTHER), title, location, starts_at, response_deadline, is_cancelled
+
+7. **Participation**
+   - PK: `id`
+   - FK: event_id, user_id
+   - Fields: status (ACCEPTED/DECLINED/PENDING), decline_reason, responded_at
+   - Constraint: unique(event_id, user_id)
+
+8. **FineCategory**
+   - PK: `id`
+   - FK: team_id
+   - Fields: name, default_amount, is_active
+
+9. **Fine**
+   - PK: `id`
+   - FK: user_id, fine_category_id, assigned_by_user_id, event_id (nullable)
+   - Fields: amount, reason_note, assigned_at, due_date, status (OPEN/PAID/CANCELLED)
+
+10. **Payment**
+    - PK: `id`
+    - FK: user_id, team_id
+    - Fields: amount, provider (MANUAL/PAYPAL), provider_txn_id, paid_at, status
+
+11. **FinePaymentLink**
+    - PK: `id`
+    - FK: fine_id, payment_id
+    - Fields: allocated_amount
+
+12. **CashLedgerEntry**
+    - PK: `id`
+    - FK: team_id, created_by_user_id, payment_id (nullable)
+    - Fields: type (INCOME/EXPENSE), category, amount, occurred_at, note
+
+13. **Notification**
+    - PK: `id`
+    - FK: user_id
+    - Fields: type, channel, title, body, is_read, created_at
+
+14. **AuditLog**
+    - PK: `id`
+    - FK: actor_user_id
+    - Fields: action, entity_name, entity_id, before_json, after_json, created_at, ip_hash
+
+15. **StandingSnapshot** (for league table scrape)
+    - PK: `id`
+    - Fields: source, captured_at, team_name, rank, played, won, drawn, lost, goal_diff, points
+
+---
+
+## 6. API Design (REST)
+
+### Auth
+- `POST /api/auth/login` (public)
+- `POST /api/auth/refresh` (authenticated)
+- `POST /api/auth/logout` (authenticated)
+
+### Users & Roles
+- `GET /api/users` (ADMIN)
+- `POST /api/users` (ADMIN)
+- `PUT /api/users/{id}` (ADMIN)
+- `DELETE /api/users/{id}` (ADMIN, soft delete)
+- `GET /api/roles` (ADMIN)
+
+### Teams
+- `GET /api/teams` (ADMIN/COACH)
+- `POST /api/teams` (ADMIN)
+- `PUT /api/teams/{id}` (ADMIN)
+- `GET /api/teams/{id}/members` (ADMIN/COACH)
+
+### Events & Attendance
+- `GET /api/events` (all authenticated; filtered by team)
+- `POST /api/events` (COACH/ADMIN)
+- `PUT /api/events/{id}` (COACH/ADMIN)
+- `DELETE /api/events/{id}` (COACH/ADMIN cancel)
+- `POST /api/events/{id}/responses` (PLAYER)
+- `GET /api/events/{id}/responses` (COACH/ADMIN)
+
+### Fine Catalog & Fines
+- `GET /api/fine-categories` (ADMIN/COACH)
+- `POST /api/fine-categories` (ADMIN/COACH)
+- `PUT /api/fine-categories/{id}` (ADMIN/COACH)
+- `DELETE /api/fine-categories/{id}` (ADMIN/COACH)
+- `GET /api/fines` (role-filtered)
+- `POST /api/fines` (ADMIN/COACH)
+- `PUT /api/fines/{id}` (ADMIN/COACH)
+- `DELETE /api/fines/{id}` (ADMIN/COACH)
+
+### Payments & Treasury
+- `GET /api/payments` (ADMIN/TREASURER; player sees own)
+- `POST /api/payments` (TREASURER or payment webhook)
+- `GET /api/ledger` (ADMIN/TREASURER)
+- `POST /api/ledger` (TREASURER)
+- `POST /api/integrations/paypal/webhook` (public, signed webhook)
+
+### Notifications
+- `GET /api/notifications` (authenticated)
+- `PUT /api/notifications/{id}/read` (owner)
+
+### Reporting
+- `GET /api/reports/attendance` (COACH/ADMIN)
+- `GET /api/reports/fines` (COACH/ADMIN/TREASURER)
+- `GET /api/reports/export` (ADMIN/TREASURER)
+- `GET /api/standings/current` (authenticated)
+
+#### Validation and Security Rules
+- Request schema validation (DTO + class-validator/Zod)
+- Authorization checks per route + resource ownership checks
+- Pagination + filtering on list APIs
+- Idempotency key for payment callbacks
+
+---
+
+## 7. Frontend Structure
+
+### Main Pages
+- Login
+- Player Dashboard
+- Coach Dashboard
+- Admin Dashboard
+- Calendar (month/week/list/detail)
+- Fines (catalog + list)
+- Payments/Treasury
+- Reports/Statistics
+- User & Role Admin
+- Settings
+
+### Navigation
+- Role-based sidebar/menu
+- Team switcher (future multi-team)
+- Notification center
+
+### User Workflows
+- Player: login → see open fines/events → respond/pay
+- Coach: create event → track responses → assign fines
+- Treasurer: reconcile payment → update ledger → export
+- Admin: manage users/roles/settings
+
+### Responsive + Mobile Readiness
+- Mobile-first layout (cards, collapsible tables)
+- Keep API stable for future native app consumption
+- Reusable design system tokens/components
+
+---
+
+## 8. Database Design (Initial Concept)
+
+### Constraints
+- Unique: users.email, role.name, participation(event_id,user_id)
+- Check: monetary amounts `> 0` where applicable
+- FK constraints on all relational links
+- Soft-delete strategy for user/fine/event records where audit is required
+
+### Indexing Strategy
+- `events(team_id, starts_at)`
+- `participation(event_id, status)`
+- `fines(user_id, status, assigned_at)`
+- `payments(team_id, paid_at)`
+- `audit_log(entity_name, entity_id, created_at)`
+
+### Integrity Rules
+- Fine marked PAID only when linked payment allocations cover amount
+- Attendance response updates blocked after deadline (unless coach override)
+- Ledger always append-only (no destructive edits)
+
+---
+
+## 9. Non-Functional Requirements
+
+### Security
+- JWT auth with short-lived access + refresh token rotation
+- Password hashing via Argon2/Bcrypt
+- RBAC + resource-level authorization
+- CSRF mitigation (if cookie auth), CORS allowlist
+- Rate limiting on auth and webhook endpoints
+
+### Privacy/GDPR
+- Data minimization, purpose limitation, retention policy
+- Export/delete request capability for personal data
+- Audit access for sensitive changes
+
+### Performance & Scalability
+- P95 API response target: < 300ms for common queries
+- Pagination and query optimization on list endpoints
+- Stateless backend horizontal scaling
+
+### Reliability & Operations
+- Structured logging (JSON), correlation IDs
+- Health/readiness checks
+- Basic monitoring: uptime, error rate, response time
+- Backup strategy for PostgreSQL (daily + retention)
+
+### Maintainability & Testability
+- Modular backend architecture
+- Typed contracts and API validation
+- Unit + integration tests for business rules
+- E2E smoke tests for critical workflows
+
+---
+
+## 10. Future Enhancements
+
+1. Native/hybrid mobile app
+2. Push notifications
+3. Extended payment providers (Stripe, SEPA)
+4. Multi-team support in one club
+5. Multi-club SaaS tenancy
+6. Club administration portal
+7. AI-assisted analytics and risk alerts
+8. Attendance prediction engine
+9. Financial forecasting/reporting module
+10. Public event sharing and club communication features
+
+---
+
+## 11. Final Technical Recommendation (Target Architecture)
+
+### Stack (Recommended)
+- **Frontend**: Vue 3 + TypeScript + Vite
+- **Backend**: NestJS + TypeScript
+- **Database**: PostgreSQL
+- **Hosting**: Netlify (frontend) + managed container host for API + managed PostgreSQL
+- **Containerization**: Docker (API)
+- **CI/CD**: GitHub Actions (lint/test/build/deploy)
+
+### System Design
+- Modular monolith for MVP (clear domain modules)
+- REST API with OpenAPI documentation
+- Event-driven integration point for notifications/webhooks
+
+### API Design Principles
+- Versioned endpoints (`/api/v1/...` when first breaking change appears)
+- Consistent error envelope and validation error format
+- Role and ownership checks at controller + service layer
+
+### Database Design Principles
+- Relational-first schema with strict constraints
+- Auditability for finance-related entities
+- Prepared path to multi-tenant model (club_id on key tables)
+
+### Source Control Strategy
+- Trunk-based development with short-lived feature branches
+- Pull requests + required checks
+- Conventional commits for release/readability
+
+### Why this fits the project constraints
+- Fast to build in a 2-day window
+- Easy to deploy and run
+- Simple enough for student maintainability
+- Structured enough to extend toward SaaS later
