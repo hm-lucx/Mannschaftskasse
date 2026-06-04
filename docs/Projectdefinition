@@ -4,7 +4,7 @@ Webapplikation zum Organisieren eines Spielbetriebes der ersten Herrenmannschaft
 - Benutzerauthentifizierung & Rollenverwaltung
 - Strafenkassa-Verwaltung (Einträge, Beträge, Personen)
 
-**Trainings- und Spielkalender mit Teilnahmemanagement**
+- Trainings- und Spielkalender mit Teilnahmemanagement:
 Trainer Zugang: 
 Termine angelegt, bearbeitet, stoniert
 darf Teilnahmestatus aller Spieler einsehen
@@ -15,8 +15,7 @@ Termine einsehen, Termine annehmen und Termine ablehnen
 muss bei Ablehnung einen Grund angeben
 darf eigene Rückmeldung bis zu einer Frist ändern, falls erlaubt
 
-Kalenderansicht
-
+Kalenderansicht:
 Die App soll Termine anzeigen als:
 Monatsansicht, Listenansicht, Detailansicht pro Termin
 
