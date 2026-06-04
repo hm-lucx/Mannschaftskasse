@@ -112,6 +112,7 @@ In Scope (MVP):
 - Strafenkatalog + Strafen zuweisen + offene/bezahlte Strafen pro Spieler
 - Zahlungsverbuchung (inkl. PayPal-Referenz) und Kassenstand
 - Basis-Statistiken zu Teilnahme und Strafen
+- Ligatabelle aus externer Quelle (Scraping) mit Hervorhebung Union Schwand
 
 Out of Scope (nicht im ersten MVP):
 - Mobile App
@@ -131,6 +132,5 @@ Offene fachliche Fragen vor AI-Umsetzung:
 - Ist „Mannschaftsweite Gesamtübersicht“ für alle Spieler erlaubt oder nur aggregiert/ohne Namen?
 - Soll Webscraping der Tabelle im MVP zwingend live erfolgen oder reicht tägliche Synchronisation?
 - Welche Zahlungsflüsse sind für MVP verbindlich: nur PayPal-Link oder auch direkte PayPal-API-Callbacks?
-
 
 

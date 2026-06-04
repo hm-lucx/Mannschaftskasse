@@ -469,7 +469,7 @@ A web platform for football team organization and team treasury management (atte
    - When TREASURER records a payment allocation
    - Then linked fines move to `PAID` only if total allocation covers amount
    - And partial allocation keeps fine `OPEN`
-   - And overpayment is not lost: excess is stored as unapplied player credit or rejected by business rule (must be implemented consistently)
+   - And overpayment is rejected (`409`) in MVP to avoid ambiguous credit handling
 
 5. **AT-005 Deadline enforcement**
    - Given event response deadline is exceeded
