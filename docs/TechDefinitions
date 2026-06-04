@@ -441,7 +441,7 @@ A web platform for football team organization and team treasury management (atte
 ### 12.1 Definition of Ready (per issue/story)
 - Role impacted is explicit (ADMIN/COACH/PLAYER/TREASURER)
 - Preconditions and expected result are stated
-- Validation and error behavior are defined (status code + message envelope)
+- Validation and error behavior are defined (status code + message envelope, see 12.4)
 - At least one happy-path and one edge case are specified
 
 ### 12.2 Acceptance Test Cases (MVP)
@@ -469,11 +469,12 @@ A web platform for football team organization and team treasury management (atte
    - When TREASURER records a payment allocation
    - Then linked fines move to `PAID` only if total allocation covers amount
    - And partial allocation keeps fine `OPEN`
+   - And overpayment is not lost: excess is stored as unapplied player credit or rejected by business rule (must be implemented consistently)
 
 5. **AT-005 Deadline enforcement**
    - Given event response deadline is exceeded
    - When PLAYER updates response
-   - Then update is rejected (`409` or business validation error)
+   - Then update is rejected (`409` business rule conflict)
    - And COACH/ADMIN override path is explicitly logged in AuditLog
 
 ### 12.3 Integration Test Recommendations (minimum)
@@ -502,7 +503,7 @@ A web platform for football team organization and team treasury management (atte
 
 ## 13. Open Questions Blocking Fully Autonomous AI MVP Build
 
-1. Is live Standings web scraping mandatory for MVP runtime, or can it be deferred to scheduled sync/cached data?
+1. Is live league table standings web scraping mandatory for MVP runtime, or can it be deferred to scheduled sync/cached data?
 2. Should TREASURER be the only role allowed to create payments and ledger entries, or can ADMIN also perform these actions?
 3. Are players allowed to see team-wide payment history with identities, or only anonymized/aggregated values?
 4. Which GDPR retention window applies to attendance decline reasons and audit records?
