@@ -97,7 +97,7 @@ Strafenkasse-Verwaltung:
 - Benutzerauthentifizierung & Rollenverwaltung
   Wir wollen mehrere Rollen die Unterschiedliche rechte und ansichten haben
   Rollen: Admin, Trainer, Spieler, Kassenwart 
-  Rollen sind wie folgt ausdefiniert:
+  Rollen sind wie folgt definiert:
   - Admin: Benutzer-/Rollenverwaltung, globale Einstellungen, Vollzugriff auf Daten
   - Trainer: Terminverwaltung, Teilnahmeübersicht inkl. Absagegründe, Strafen zuweisen
   - Spieler: Eigene Termine beantworten, eigene Strafen und Zahlungen einsehen
@@ -131,7 +131,6 @@ Offene fachliche Fragen vor AI-Umsetzung:
 - Ist „Mannschaftsweite Gesamtübersicht“ für alle Spieler erlaubt oder nur aggregiert/ohne Namen?
 - Soll Webscraping der Tabelle im MVP zwingend live erfolgen oder reicht tägliche Synchronisation?
 - Welche Zahlungsflüsse sind für MVP verbindlich: nur PayPal-Link oder auch direkte PayPal-API-Callbacks?
-
 
 
 
