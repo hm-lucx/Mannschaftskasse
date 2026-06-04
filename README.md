@@ -29,3 +29,16 @@ Development Approach:
 - Pull Requests
 - CI/CD
 - AI-assisted development
+
+## AI Team
+
+| Agent | Role |
+|---------|---------|
+| PfenningFuchs | Product Owner |
+| Software Architect | Solution Architect |
+| Football Fullstack Engineer | Full-Stack Developer |
+| Football Code Reviewer | Code Reviewer |
+| Football QA Engineer | Quality Assurance |
+| AI Strategy Agent | AI Evaluation & Process Improvement |
+
+For details see: docs/TEAM_AGENTS.md
