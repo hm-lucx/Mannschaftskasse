@@ -1,0 +1,16 @@
+services:
+  api:
+    volumes:
+      - ./packages/api/src:/app/src
+      - ./packages/api/nest-cli.json:/app/nest-cli.json
+    command: sh -c "npm run seed && npm run start:dev"
+    environment:
+      NODE_ENV: development
+
+  web:
+    volumes:
+      - ./packages/web/src:/app/src
+      - ./packages/web/index.html:/app/index.html
+    command: npm run dev -- --host 0.0.0.0
+    environment:
+      NODE_ENV: development
