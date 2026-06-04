@@ -2,6 +2,8 @@ Aufgaben:
 Webapplikation zum Organisieren eines Spielbetriebes der ersten Herrenmannschaft des Union Schwand
 
 - Benutzerauthentifizierung & Rollenverwaltung
+
+
 - Strafenkassa-Verwaltung (Einträge, Beträge, Personen)
 
 - Trainings- und Spielkalender mit Teilnahmemanagement:
@@ -31,10 +33,65 @@ In der Traineransicht zusätzlich:
 Anzahl Zusagen, Anzahl Absagen, Anzahl offener Rückmeldungen, Liste der Spieler je Status
 
 - Spieler-Dashboard (Strafen, Kalender, Zu-/Absage)
+- Trainings- und Spielkalender mit Teilnahmemanagement
+
+- Spieler-Dashboard (Strafen, Kalender, Zu-/Absage)
+Das Spieler-Dashboard stellt die zentrale Benutzeroberfläche für Spieler dar und dient als personalisierte Startseite nach erfolgreicher Anmeldung. 
+Es bündelt alle für den Spieler relevanten Informationen in einer übersichtlichen Ansicht und ermöglicht den direkten Zugriff auf 
+Strafen, Termine sowie die Verwaltung von Zu- und Absagen. Nach dem Login werden die persönlichen Daten des angemeldeten Spielers 
+über eine geschützte API geladen und in Echtzeit dargestellt. Das Dashboard zeigt die Anzahl und Gesamtsumme offener Strafen, eine 
+Übersicht der eigenen Strafenhistorie inklusive Kategorie, Betrag, Datum, Status und Notizen sowie die nächsten anstehenden 
+Trainings- und Spieltermine. Darüber hinaus enthält das Dashboard eine Kalenderansicht mit Wochen-, Monats- und Listenansicht, in der 
+alle für den Spieler relevanten Veranstaltungen angezeigt werden. Für jeden Termin kann der Spieler seinen Teilnahmestatus auf
+„Zugesagt“, „Abgesagt“ oder „Keine Rückmeldung“ setzen. Bei einer Absage ist die Angabe eines Begründungstextes verpflichtend, welcher 
+gemeinsam mit dem Status in der Datenbank gespeichert wird. Änderungen des Teilnahmestatus werden unmittelbar über eine REST-API 
+verarbeitet und stehen Trainern für die Teilnehmerübersicht in Echtzeit zur Verfügung. Das System stellt sicher, dass Spieler ausschließlich 
+auf ihre eigenen Daten zugreifen können. Sämtliche Zugriffe werden durch eine JWT-basierte Authentifizierung sowie ein rollenbasiertes 
+Berechtigungssystem abgesichert. Die technische Umsetzung erfolgt als React- bzw. Next.js-Komponente mit TypeScript und einer Anbindung 
+an das Backend über dedizierte API-Endpunkte für Dashboarddaten, Strafen und Teilnahmen. Die Daten werden in den Entitäten 
+„Player“, „Fine“, „Event“ und „Attendance“ verwaltet und über relationale Verknüpfungen in der Datenbank zusammengeführt. 
+Das Dashboard muss vollständig responsive gestaltet sein, auf mobilen Endgeräten und Desktop-Systemen gleichermaßen funktionieren 
+und eine maximale Ladezeit von zwei Sekunden nicht überschreiten. Zusätzlich können Benachrichtigungen zu neuen Strafen, neu angelegten 
+Terminen oder bevorstehenden Trainings und Spielen angezeigt werden, um die Kommunikation innerhalb des Vereins zu verbessern und die 
+aktive Teilnahme der Spieler zu fördern.
+
 
 - Statistiken und Auswertungen für Trainer
+
 - Optionale Bezahlfunktion (Zahlungsintegration)
 
 Beschreibung der Aufgaben:
 
 Benutzerauthentifizierung & Rollenverwaltung:
+
+Strafenkasse-Verwaltung:
+Die Kassenverwaltung ist Teil des Webclients, der sich darum kümmert,
+welche Strafen es gibt,wer sie bekommt. Wie viel Geld noch offen ist und was
+aktuell in der Kasse ist.
+Der Admin/Trainer kann neue Strafkategorien definieren, beispielsweise "zu spät"
+für 5€ oder "nicht erscheinen" für 20€. Er kann außerdem einzelnen Spielern
+Strafen zuweisen, er wählt den Spieler, die Kategorie, das Datum und schreibt
+optional eine Notiz dazu. Einträge können bearbeitet oder gelöscht werden.
+wenn ein Spieler über die integrierte Bezahlfunktion bezahlt hat, wird die
+Strafe automatisch als bezahlt markiert.
+Spieler können nur lesen. Sie sehen ihre eigenen Strafen, den offenen Betrag
+und eine Gesamtübersicht der Mannschaft. Außerdem auch eine Historie, wer
+bereits wie viel gezhalt hat.
+Die Kassenveraltung stellt außerdem sicher, dass summen immer automatisch berechnet
+werden, also noch offen vs. bezahlt pro Spieler. Andere Features wie die Zahlungsintegration
+nutzen die Daten der Kassenverwaltung.
+Es sollten auch wiederkehrende Strafen automatisch vorgeschlafen werden, bspw.
+wenn jemand 3 mal in Folge zu spät kommt, zahlt er doppelt.
+Man kann zusätzlich auch Einnahmen (bspw. aus Turnieren oder sonstigen aktionen)
+hinzufügen um einen generellen Kassenstand der Mannschaft zu haben.
+Alles Buchungen werden in einem einfachen protokoll festgehalten, damit nachhvollziehbar
+ist, was wann rein oder auch rausgeganen ist, bzw. wer wann was gezahlt hat.
+Das kann man am Ende exportieren, für eine Saisonabrechnung.
+
+
+
+
+
+
+
+
