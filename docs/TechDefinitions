@@ -498,6 +498,7 @@ A web platform for football team organization and team treasury management (atte
   - `409` business rule conflict
   - `429` rate limit
   - `500` unexpected error (without leaking internals)
+- `correlationId` is returned on all error responses, including 5xx errors.
 
 ---
 
