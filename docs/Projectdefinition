@@ -1,94 +1,103 @@
-Aufgaben:
-Webapplikation zum Organisieren eines Spielbetriebes der ersten Herrenmannschaft des Union Schwand
+Produktdefinition: 
+Wir wollen hier eine Webapplikation für das Organisatorische Management der 1. Herrenmannschaft des Fußballvereins Union Schwand. Dabei wollen wir Statistiken, einen Strafenkatalog, einen Terminkalendar, etc.
+Diese Applikation soll ein RBAC integriert haben. Die Webapplication soll auf der Hostingplattform Netlify in Zukunft laufen, weshalb wir in zukunft auch noch eine CICD pipeline integrieren werden. 
 
-- Benutzerauthentifizierung & Rollenverwaltung
-
-
-- Strafenkassa-Verwaltung (Einträge, Beträge, Personen)
+Genauere definitionen Folgen hier:
 
 - Trainings- und Spielkalender mit Teilnahmemanagement:
-Terminarten:
-- Training
-- Spiel
-- Sonstiger Termin
+    Terminarten:
+    - Training
+    - Spiel
+    - Sonstiger Termin
+    
+    Trainer Zugang: 
+    Termine angelegt, bearbeitet, stoniert
+    darf Teilnahmestatus aller Spieler einsehen
+    darf Absagegründe einsehen
+    Termin beinhaltet Datum, Art des termins eine Frist bis wann darauf reagiert werden muss, eine kurze anzeige wie viele zu/abgesagt haben und wie viele antworten ausstehen
+    
+    Spieler Zugang:
+    Termine einsehen, Termine annehmen und Termine ablehnen
+    muss bei Ablehnung einen Grund angeben in einem freitext
+    darf eigene Rückmeldung bis zu einer Frist ändern, falls erlaubt
+    
+    Kalenderansicht:
+    Die App soll Termine anzeigen als:
+    Monatsansicht, Listenansicht, Detailansicht pro Termin
+    
+    In der Terminübersicht sollen sichtbar sein:
+    Datum und Uhrzeit, Terminart, Ort, eigener Teilnahmestatus, Anzahl der Teilnehmer, ob eine Rückmeldung noch offen ist
+    
+    In der Traineransicht zusätzlich:
+    Anzahl Zusagen, Anzahl Absagen, Anzahl offener Rückmeldungen, Liste der Spieler je Status
 
-Trainer Zugang: 
-Termine angelegt, bearbeitet, stoniert
-darf Teilnahmestatus aller Spieler einsehen
-darf Absagegründe einsehen
 
-Spieler Zugang:
-Termine einsehen, Termine annehmen und Termine ablehnen
-muss bei Ablehnung einen Grund angeben
-darf eigene Rückmeldung bis zu einer Frist ändern, falls erlaubt
 
-Kalenderansicht:
-Die App soll Termine anzeigen als:
-Monatsansicht, Listenansicht, Detailansicht pro Termin
 
-In der Terminübersicht sollen sichtbar sein:
-Datum und Uhrzeit, Terminart, Ort, eigener Teilnahmestatus, Anzahl der Teilnehmer, ob eine Rückmeldung noch offen ist
-
-In der Traineransicht zusätzlich:
-Anzahl Zusagen, Anzahl Absagen, Anzahl offener Rückmeldungen, Liste der Spieler je Status
 
 - Spieler-Dashboard (Strafen, Kalender, Zu-/Absage)
-- Trainings- und Spielkalender mit Teilnahmemanagement
+    Kerninhalte
+    
+      Personalisierte Startseite nach Login
+      Anzeige offener Strafen (Anzahl & Gesamtsumme)
+      Strafenhistorie (Kategorie, Betrag, Datum, Status, Notizen)
+      Nächste Trainings- und Spieltermine
+    
+    Kalender
+      Wochen-, Monats- und Listenansicht
+      Alle spielerrelevanten Events sichtbar
+      Teilnahmestatus setzen: Zugesagt / Abgesagt / Keine Rückmeldung
+      Pflichtbegründung bei Absage
 
-- Spieler-Dashboard (Strafen, Kalender, Zu-/Absage)
-Das Spieler-Dashboard stellt die zentrale Benutzeroberfläche für Spieler dar und dient als personalisierte Startseite nach erfolgreicher Anmeldung. 
-Es bündelt alle für den Spieler relevanten Informationen in einer übersichtlichen Ansicht und ermöglicht den direkten Zugriff auf 
-Strafen, Termine sowie die Verwaltung von Zu- und Absagen. Nach dem Login werden die persönlichen Daten des angemeldeten Spielers 
-über eine geschützte API geladen und in Echtzeit dargestellt. Das Dashboard zeigt die Anzahl und Gesamtsumme offener Strafen, eine 
-Übersicht der eigenen Strafenhistorie inklusive Kategorie, Betrag, Datum, Status und Notizen sowie die nächsten anstehenden 
-Trainings- und Spieltermine. Darüber hinaus enthält das Dashboard eine Kalenderansicht mit Wochen-, Monats- und Listenansicht, in der 
-alle für den Spieler relevanten Veranstaltungen angezeigt werden. Für jeden Termin kann der Spieler seinen Teilnahmestatus auf
-„Zugesagt“, „Abgesagt“ oder „Keine Rückmeldung“ setzen. Bei einer Absage ist die Angabe eines Begründungstextes verpflichtend, welcher 
-gemeinsam mit dem Status in der Datenbank gespeichert wird. Änderungen des Teilnahmestatus werden unmittelbar über eine REST-API 
-verarbeitet und stehen Trainern für die Teilnehmerübersicht in Echtzeit zur Verfügung. Das System stellt sicher, dass Spieler ausschließlich 
-auf ihre eigenen Daten zugreifen können. Sämtliche Zugriffe werden durch eine JWT-basierte Authentifizierung sowie ein rollenbasiertes 
-Berechtigungssystem abgesichert. Die technische Umsetzung erfolgt als React- bzw. Next.js-Komponente mit TypeScript und einer Anbindung 
-an das Backend über dedizierte API-Endpunkte für Dashboarddaten, Strafen und Teilnahmen. Die Daten werden in den Entitäten 
-„Player“, „Fine“, „Event“ und „Attendance“ verwaltet und über relationale Verknüpfungen in der Datenbank zusammengeführt. 
-Das Dashboard muss vollständig responsive gestaltet sein, auf mobilen Endgeräten und Desktop-Systemen gleichermaßen funktionieren 
-und eine maximale Ladezeit von zwei Sekunden nicht überschreiten. Zusätzlich können Benachrichtigungen zu neuen Strafen, neu angelegten 
-Terminen oder bevorstehenden Trainings und Spielen angezeigt werden, um die Kommunikation innerhalb des Vereins zu verbessern und die 
-aktive Teilnahme der Spieler zu fördern.
+    Anlegen Spieler 
+      Ein Spieler wird von einem Admin angelegt
+      Die Attribute eines Spielers sind: Name, Alter, Email, Adresse, Telefonnummer
 
 
-- Statistiken und Auswertungen für Trainer
+- Bezahlfunktion (Zahlungsintegration)
+    Es wird eine bezahlfunktion benötigt
+    Wir wollen eine anbindung zu PayPal; Sobald per PayPal bezahlt ist sollen die strafen als beglichen angezeigt werden.
+    Die Empfängeradresse soll von dem Kassenwart eingegeben werden
 
-- Optionale Bezahlfunktion (Zahlungsintegration)
-
-Beschreibung der Aufgaben:
 
 Benutzerauthentifizierung & Rollenverwaltung:
 
 Strafenkasse-Verwaltung:
-Die Kassenverwaltung ist Teil des Webclients, der sich darum kümmert,
-welche Strafen es gibt,wer sie bekommt. Wie viel Geld noch offen ist und was
-aktuell in der Kasse ist.
-Der Admin/Trainer kann neue Strafkategorien definieren, beispielsweise "zu spät"
-für 5€ oder "nicht erscheinen" für 20€. Er kann außerdem einzelnen Spielern
-Strafen zuweisen, er wählt den Spieler, die Kategorie, das Datum und schreibt
-optional eine Notiz dazu. Einträge können bearbeitet oder gelöscht werden.
-wenn ein Spieler über die integrierte Bezahlfunktion bezahlt hat, wird die
-Strafe automatisch als bezahlt markiert.
-Spieler können nur lesen. Sie sehen ihre eigenen Strafen, den offenen Betrag
-und eine Gesamtübersicht der Mannschaft. Außerdem auch eine Historie, wer
-bereits wie viel gezhalt hat.
-Die Kassenveraltung stellt außerdem sicher, dass summen immer automatisch berechnet
-werden, also noch offen vs. bezahlt pro Spieler. Andere Features wie die Zahlungsintegration
-nutzen die Daten der Kassenverwaltung.
-Es sollten auch wiederkehrende Strafen automatisch vorgeschlafen werden, bspw.
-wenn jemand 3 mal in Folge zu spät kommt, zahlt er doppelt.
-Man kann zusätzlich auch Einnahmen (bspw. aus Turnieren oder sonstigen aktionen)
-hinzufügen um einen generellen Kassenstand der Mannschaft zu haben.
-Alles Buchungen werden in einem einfachen protokoll festgehalten, damit nachhvollziehbar
-ist, was wann rein oder auch rausgeganen ist, bzw. wer wann was gezahlt hat.
-Das kann man am Ende exportieren, für eine Saisonabrechnung.
+  Strafkategorien (Admin/Trainer)
+    Kategorien frei definierbar, z.B. „zu spät" → 5€, „nicht erscheinen" → 20€
+    Kategorien bearbeitbar und löschbar
+  Strafen zuweisen (Admin/Trainer)
+    Zuweisung per Spieler, Kategorie, Datum + optionaler Notiz
+    Einträge nachträglich bearbeitbar und löschbar
+    Automatische Markierung als bezahlt nach Zahlung über integrierte Bezahlfunktion
+  Spieler-Ansicht (nur lesend) 
+    Eigene Strafen und offener Betrag
+    Mannschaftsweite Gesamtübersicht
+    Historie: wer hat wann wie viel bezahlt
+  Automatische Berechnung
+    Offener vs. bezahlter Betrag pro Spieler wird stets automatisch berechnet
+    Wiederkehrende Strafen werden vorgeschlagen, z.B. 3× zu spät in Folge → doppelter Betrag
+  Einnahmen & Kassenstand
+    Manuelle Einnahmen erfassbar, z.B. Turniergewinne oder Sonderaktionen
+    Daraus resultiert ein Gesamtkassenstand der Mannschaft
+  Buchungsprotokoll & Export 
+    Alle Buchungen (Ein- und Ausgänge, Zahlungen) werden protokolliert
+    Nachvollziehbar: wer hat wann was gezahlt / was ist rein-/rausgegangen
+    Export für Saisonabrechnung
+
+- Statistiken und Auswertungen für Trainer
+  Wir benötigen eine seite die mehrere Statistiken über eine gewisse zeiträume abbildet 
+  Statstiken: Welcher Spieler hat die meisten Trainingsbeteiligungen, Welcehr spieler hat die meisten Spielbeteiligungen, Wer ist am wenigsten im training und wer hat am wenigsten spielbeteiligungen
+              Wer beantwortet am wenigstens Termine, Wer hat am meisten strafen gezahlt + einen filter für die gewisse Strafe, 
+
+  Bitte bilde auf einer seite die aktuelle tabelle ab. Die daten sind auf dieser Webseite verfügbar (https://www.ligaportal.at/ooe/2-klasse/2-klasse-sued-west/tabelle). Hole dir die Daten per Webscraping. Wenn möglich highlighte noch die ergebnisse von Union Schwand.
 
 
+
+- Benutzerauthentifizierung & Rollenverwaltung
+  Wir wollen mehrere Rollen die Unterschiedliche rechte und ansichten haben
+  Rollen: Admin, Trainer, Spieler, Kassenwart 
+  Todo: Rollen ausdefineieren. 
 
 
 
