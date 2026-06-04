@@ -15,7 +15,7 @@ Core Features:
 - Audit and reporting
 
 Technology Stack:
-
+Hosting Environment : Netlify
 
 Development Approach:
 - Scrum
