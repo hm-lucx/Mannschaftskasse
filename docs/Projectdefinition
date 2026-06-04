@@ -1,0 +1,13 @@
+Aufgaben:
+Webapplikation zum Organisieren eines Spielbetriebes der ersten Herrenmannschaft des Union Schwand
+
+- Benutzerauthentifizierung & Rollenverwaltung
+- Strafenkassa-Verwaltung (Einträge, Beträge, Personen)
+- Trainings- und Spielkalender mit Teilnahmemanagement
+- Spieler-Dashboard (Strafen, Kalender, Zu-/Absage)
+- Statistiken und Auswertungen für Trainer
+- Optionale Bezahlfunktion (Zahlungsintegration)
+
+Beschreibung der Aufgaben:
+
+Benutzerauthentifizierung & Rollenverwaltung:
