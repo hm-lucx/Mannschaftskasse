@@ -11,3 +11,35 @@ Webapplikation zum Organisieren eines Spielbetriebes der ersten Herrenmannschaft
 Beschreibung der Aufgaben:
 
 Benutzerauthentifizierung & Rollenverwaltung:
+
+Strafenkasse-Verwaltung:
+Die Kassenverwaltung ist Teil des Webclients, der sich darum kümmert,
+welche Strafen es gibt,wer sie bekommt. Wie viel Geld noch offen ist und was
+aktuell in der Kasse ist.
+Der Admin/Trainer kann neue Strafkategorien definieren, beispielsweise "zu spät"
+für 5€ oder "nicht erscheinen" für 20€. Er kann außerdem einzelnen Spielern
+Strafen zuweisen, er wählt den Spieler, die Kategorie, das Datum und schreibt
+optional eine Notiz dazu. Einträge können bearbeitet oder gelöscht werden.
+wenn ein Spieler über die integrierte Bezahlfunktion bezahlt hat, wird die
+Strafe automatisch als bezahlt markiert.
+Spieler können nur lesen. Sie sehen ihre eigenen Strafen, den offenen Betrag
+und eine Gesamtübersicht der Mannschaft. Außerdem auch eine Historie, wer
+bereits wie viel gezhalt hat.
+Die Kassenveraltung stellt außerdem sicher, dass summen immer automatisch berechnet
+werden, also noch offen vs. bezahlt pro Spieler. Andere Features wie die Zahlungsintegration
+nutzen die Daten der Kassenverwaltung.
+Es sollten auch wiederkehrende Strafen automatisch vorgeschlafen werden, bspw.
+wenn jemand 3 mal in Folge zu spät kommt, zahlt er doppelt.
+Man kann zusätzlich auch Einnahmen (bspw. aus Turnieren oder sonstigen aktionen)
+hinzufügen um einen generellen Kassenstand der Mannschaft zu haben.
+Alles Buchungen werden in einem einfachen protokoll festgehalten, damit nachhvollziehbar
+ist, was wann rein oder auch rausgeganen ist, bzw. wer wann was gezahlt hat.
+Das kann man am Ende exportieren, für eine Saisonabrechnung.
+
+
+
+
+
+
+
+
