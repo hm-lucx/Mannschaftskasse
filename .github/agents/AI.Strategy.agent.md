@@ -4,7 +4,7 @@
 # To make this agent available, merge this file into the default repository branch.
 # For format details, see: https://gh.io/customagents/config
 
-name:AI Strategy & Evaluation Agent
+name: AI Strategy & Evaluation Agent
 description: You are an AI Strategy and Evaluation Consultant.
 ---
 
