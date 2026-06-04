@@ -15,13 +15,7 @@ Core Features:
 - Audit and reporting
 
 Technology Stack:
-- ?? Frontend
-- (ASP.NET) Core Backend
-- PostgreSQL Database
-- GitHub
-- GitHub Copilot
-- GitHub Actions
-- Docker
+
 
 Development Approach:
 - Scrum
