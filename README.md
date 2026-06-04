@@ -8,7 +8,7 @@ Core Features:
 - Fine management
 - Training calendar (possibility to accept or decline with reason)
 - Match calendar 
-- Role-based access control
+- Role-based access control (Roles: Admin, Player, Coach, Fine manager)
 - Authentication & authorization
 - Team treasury management
 - Optional payment integration
