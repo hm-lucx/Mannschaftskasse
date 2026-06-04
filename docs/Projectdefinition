@@ -2,10 +2,34 @@ Aufgaben:
 Webapplikation zum Organisieren eines Spielbetriebes der ersten Herrenmannschaft des Union Schwand
 
 - Benutzerauthentifizierung & Rollenverwaltung
+
+
 - Strafenkassa-Verwaltung (Einträge, Beträge, Personen)
 - Trainings- und Spielkalender mit Teilnahmemanagement
+
 - Spieler-Dashboard (Strafen, Kalender, Zu-/Absage)
+Das Spieler-Dashboard stellt die zentrale Benutzeroberfläche für Spieler dar und dient als personalisierte Startseite nach erfolgreicher Anmeldung. 
+Es bündelt alle für den Spieler relevanten Informationen in einer übersichtlichen Ansicht und ermöglicht den direkten Zugriff auf 
+Strafen, Termine sowie die Verwaltung von Zu- und Absagen. Nach dem Login werden die persönlichen Daten des angemeldeten Spielers 
+über eine geschützte API geladen und in Echtzeit dargestellt. Das Dashboard zeigt die Anzahl und Gesamtsumme offener Strafen, eine 
+Übersicht der eigenen Strafenhistorie inklusive Kategorie, Betrag, Datum, Status und Notizen sowie die nächsten anstehenden 
+Trainings- und Spieltermine. Darüber hinaus enthält das Dashboard eine Kalenderansicht mit Wochen-, Monats- und Listenansicht, in der 
+alle für den Spieler relevanten Veranstaltungen angezeigt werden. Für jeden Termin kann der Spieler seinen Teilnahmestatus auf
+„Zugesagt“, „Abgesagt“ oder „Keine Rückmeldung“ setzen. Bei einer Absage ist die Angabe eines Begründungstextes verpflichtend, welcher 
+gemeinsam mit dem Status in der Datenbank gespeichert wird. Änderungen des Teilnahmestatus werden unmittelbar über eine REST-API 
+verarbeitet und stehen Trainern für die Teilnehmerübersicht in Echtzeit zur Verfügung. Das System stellt sicher, dass Spieler ausschließlich 
+auf ihre eigenen Daten zugreifen können. Sämtliche Zugriffe werden durch eine JWT-basierte Authentifizierung sowie ein rollenbasiertes 
+Berechtigungssystem abgesichert. Die technische Umsetzung erfolgt als React- bzw. Next.js-Komponente mit TypeScript und einer Anbindung 
+an das Backend über dedizierte API-Endpunkte für Dashboarddaten, Strafen und Teilnahmen. Die Daten werden in den Entitäten 
+„Player“, „Fine“, „Event“ und „Attendance“ verwaltet und über relationale Verknüpfungen in der Datenbank zusammengeführt. 
+Das Dashboard muss vollständig responsive gestaltet sein, auf mobilen Endgeräten und Desktop-Systemen gleichermaßen funktionieren 
+und eine maximale Ladezeit von zwei Sekunden nicht überschreiten. Zusätzlich können Benachrichtigungen zu neuen Strafen, neu angelegten 
+Terminen oder bevorstehenden Trainings und Spielen angezeigt werden, um die Kommunikation innerhalb des Vereins zu verbessern und die 
+aktive Teilnahme der Spieler zu fördern.
+
+
 - Statistiken und Auswertungen für Trainer
+
 - Optionale Bezahlfunktion (Zahlungsintegration)
 
 Beschreibung der Aufgaben:
