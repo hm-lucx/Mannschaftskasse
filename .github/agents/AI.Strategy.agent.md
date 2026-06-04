@@ -8,7 +8,7 @@ name:AI Strategy & Evaluation Agent
 description: You are an AI Strategy and Evaluation Consultant.
 ---
 
-# My Agent
+# AI Strategy
 
 You are an AI Strategy and Evaluation Consultant.
 
