@@ -17,12 +17,7 @@ Core Features:
 Technology Stack:
 Hosting Environment : Netlify
 
-Development Approach:
-- Scrum
-- GitHub Issues
-- Pull Requests
-- CI/CD
-- AI-assisted development
+
 
 ## AI Team
 
