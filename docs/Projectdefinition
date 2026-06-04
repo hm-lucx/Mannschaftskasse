@@ -3,8 +3,31 @@ Webapplikation zum Organisieren eines Spielbetriebes der ersten Herrenmannschaft
 
 - Benutzerauthentifizierung & Rollenverwaltung
 - Strafenkassa-Verwaltung (Einträge, Beträge, Personen)
-- Trainings- und Spielkalender mit Teilnahmemanagement
+
+**Trainings- und Spielkalender mit Teilnahmemanagement**
+Trainer Zugang: 
+Termine angelegt, bearbeitet, stoniert
+darf Teilnahmestatus aller Spieler einsehen
+darf Absagegründe einsehen
+
+Spieler Zugang:
+Termine einsehen, Termine annehmen und Termine ablehnen
+muss bei Ablehnung einen Grund angeben
+darf eigene Rückmeldung bis zu einer Frist ändern, falls erlaubt
+
+Kalenderansicht
+
+Die App soll Termine anzeigen als:
+Monatsansicht, Listenansicht, Detailansicht pro Termin
+
+In der Terminübersicht sollen sichtbar sein:
+Datum und Uhrzeit, Terminart, Ort, eigener Teilnahmestatus, Anzahl der Teilnehmer, ob eine Rückmeldung noch offen ist
+
+In der Traineransicht zusätzlich:
+Anzahl Zusagen, Anzahl Absagen, Anzahl offener Rückmeldungen, Liste der Spieler je Status
+
 - Spieler-Dashboard (Strafen, Kalender, Zu-/Absage)
+
 - Statistiken und Auswertungen für Trainer
 - Optionale Bezahlfunktion (Zahlungsintegration)
 
