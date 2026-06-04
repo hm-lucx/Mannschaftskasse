@@ -5,6 +5,11 @@ Webapplikation zum Organisieren eines Spielbetriebes der ersten Herrenmannschaft
 - Strafenkassa-Verwaltung (Einträge, Beträge, Personen)
 
 - Trainings- und Spielkalender mit Teilnahmemanagement:
+Terminarten:
+- Training
+- Spiel
+- Sonstiger Termin
+
 Trainer Zugang: 
 Termine angelegt, bearbeitet, stoniert
 darf Teilnahmestatus aller Spieler einsehen
