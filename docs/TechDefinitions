@@ -5,7 +5,7 @@
 - **Project type**: 2-day university project (MVP-first)
 - **Primary goal**: Easy maintainability, easy deployment, easy extensibility
 - **Business scope**: Football team operations + team cash management (fines, payments, attendance, calendar, reporting)
-- **Future scope**: Potential SaaS for multiple clubs
+- **Future scope**: Additional modules (e.g. mobile app, advanced analytics), but strictly single-team.
 
 ---
 
@@ -41,7 +41,7 @@
 
 **Recommendation (MVP + growth): `NestJS + TypeScript`**
 - Balanced speed and structure
-- Clean module boundaries for future SaaS evolution
+- Clean module boundaries for maintainability
 - Shared language with frontend reduces cognitive load
 
 ---
@@ -155,11 +155,11 @@ A web platform for football team organization and team treasury management (atte
 8. **Team Cash Register**
    - Ledger for income/expense and balances
 9. **Payment Management**
-   - Payment records, PayPal webhook reconciliation
+   - Payment records, simple PayPal.Me link generation for open balances
 10. **Notifications**
    - In-app + optional email reminders
 11. **Statistics & Reporting**
-   - Participation trends, fines/payment metrics, exports
+   - Participation trends, fines/payment metrics, live on-demand standings scraping, exports
 12. **Audit Logging (additional necessary module)**
    - Immutable logs for sensitive operations
 13. **Configuration Module (additional)**
@@ -186,15 +186,16 @@ A web platform for football team organization and team treasury management (atte
 4. **Team**
    - PK: `id`
    - Fields: name, season, is_active
+   *(Note: Single team architecture, this serves as global configuration)*
 
 5. **TeamMembership**
    - PK: `id`
-   - FK: user_id, team_id
+   - FK: user_id
    - Fields: joined_at, left_at, shirt_number
 
 6. **Event**
    - PK: `id`
-   - FK: team_id, created_by_user_id
+   - FK: created_by_user_id
    - Fields: type (TRAINING/MATCH/OTHER), title, location, starts_at, response_deadline, is_cancelled
 
 7. **Participation**
@@ -205,7 +206,6 @@ A web platform for football team organization and team treasury management (atte
 
 8. **FineCategory**
    - PK: `id`
-   - FK: team_id
    - Fields: name, default_amount, is_active
 
 9. **Fine**
@@ -215,8 +215,8 @@ A web platform for football team organization and team treasury management (atte
 
 10. **Payment**
     - PK: `id`
-    - FK: user_id, team_id
-    - Fields: amount, provider (MANUAL/PAYPAL), provider_txn_id, paid_at, status
+    - FK: user_id
+    - Fields: amount, provider (MANUAL/PAYPAL_LINK), paid_at, status
 
 11. **FinePaymentLink**
     - PK: `id`
@@ -225,7 +225,7 @@ A web platform for football team organization and team treasury management (atte
 
 12. **CashLedgerEntry**
     - PK: `id`
-    - FK: team_id, created_by_user_id, payment_id (nullable)
+    - FK: created_by_user_id, payment_id (nullable)
     - Fields: type (INCOME/EXPENSE), category, amount, occurred_at, note
 
 13. **Notification**
@@ -237,10 +237,6 @@ A web platform for football team organization and team treasury management (atte
     - PK: `id`
     - FK: actor_user_id
     - Fields: action, entity_name, entity_id, before_json, after_json, created_at, ip_hash
-
-15. **StandingSnapshot** (for league table scrape)
-    - PK: `id`
-    - Fields: source, captured_at, team_name, rank, played, won, drawn, lost, goal_diff, points
 
 ---
 
@@ -259,13 +255,12 @@ A web platform for football team organization and team treasury management (atte
 - `GET /api/roles` (ADMIN)
 
 ### Teams
-- `GET /api/teams` (ADMIN/COACH)
-- `POST /api/teams` (ADMIN)
-- `PUT /api/teams/{id}` (ADMIN)
-- `GET /api/teams/{id}/members` (ADMIN/COACH)
+- `GET /api/team` (all authenticated)
+- `PUT /api/team` (ADMIN)
+- `GET /api/team/members` (all authenticated)
 
 ### Events & Attendance
-- `GET /api/events` (all authenticated; filtered by team)
+- `GET /api/events` (all authenticated)
 - `POST /api/events` (COACH/ADMIN)
 - `PUT /api/events/{id}` (COACH/ADMIN)
 - `DELETE /api/events/{id}` (COACH/ADMIN cancel)
@@ -284,10 +279,9 @@ A web platform for football team organization and team treasury management (atte
 
 ### Payments & Treasury
 - `GET /api/payments` (ADMIN/TREASURER; player sees own)
-- `POST /api/payments` (TREASURER or payment webhook)
+- `POST /api/payments` (TREASURER)
 - `GET /api/ledger` (ADMIN/TREASURER)
 - `POST /api/ledger` (TREASURER)
-- `POST /api/integrations/paypal/webhook` (public, signed webhook)
 
 ### Notifications
 - `GET /api/notifications` (authenticated)
@@ -323,7 +317,6 @@ A web platform for football team organization and team treasury management (atte
 
 ### Navigation
 - Role-based sidebar/menu
-- Team switcher (future multi-team)
 - Notification center
 
 ### User Workflows
@@ -348,10 +341,10 @@ A web platform for football team organization and team treasury management (atte
 - Soft-delete strategy for user/fine/event records where audit is required
 
 ### Indexing Strategy
-- `events(team_id, starts_at)`
+- `events(starts_at)`
 - `participation(event_id, status)`
 - `fines(user_id, status, assigned_at)`
-- `payments(team_id, paid_at)`
+- `payments(paid_at)`
 - `audit_log(entity_name, entity_id, created_at)`
 
 ### Integrity Rules
@@ -398,14 +391,11 @@ A web platform for football team organization and team treasury management (atte
 
 1. Native/hybrid mobile app
 2. Push notifications
-3. Extended payment providers (Stripe, SEPA)
-4. Multi-team support in one club
-5. Multi-club SaaS tenancy
-6. Club administration portal
-7. AI-assisted analytics and risk alerts
-8. Attendance prediction engine
-9. Financial forecasting/reporting module
-10. Public event sharing and club communication features
+3. Club administration portal
+4. AI-assisted analytics and risk alerts
+5. Attendance prediction engine
+6. Financial forecasting/reporting module
+7. Public event sharing and club communication features
 
 ---
 
@@ -422,7 +412,7 @@ A web platform for football team organization and team treasury management (atte
 ### System Design
 - Modular monolith for MVP (clear domain modules)
 - REST API with OpenAPI documentation
-- Event-driven integration point for notifications/webhooks
+- Event-driven integration point for notifications
 
 ### API Design Principles
 - Versioned endpoints (`/api/v1/...` when first breaking change appears)
@@ -432,7 +422,6 @@ A web platform for football team organization and team treasury management (atte
 ### Database Design Principles
 - Relational-first schema with strict constraints
 - Auditability for finance-related entities
-- Prepared path to multi-tenant model (club_id on key tables)
 
 ### Source Control Strategy
 - Trunk-based development with short-lived feature branches
@@ -443,4 +432,4 @@ A web platform for football team organization and team treasury management (atte
 - Fast to build in a 2-day window
 - Easy to deploy and run
 - Simple enough for student maintainability
-- Structured enough to extend toward SaaS later
+- Structured enough to extend with new features later
