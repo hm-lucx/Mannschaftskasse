@@ -97,10 +97,40 @@ Strafenkasse-Verwaltung:
 - Benutzerauthentifizierung & Rollenverwaltung
   Wir wollen mehrere Rollen die Unterschiedliche rechte und ansichten haben
   Rollen: Admin, Trainer, Spieler, Kassenwart 
-  Todo: Rollen ausdefineieren. 
+  Rollen sind wie folgt definiert:
+  - Admin: Benutzer-/Rollenverwaltung, globale Einstellungen, Vollzugriff auf Daten
+  - Trainer: Terminverwaltung, Teilnahmeübersicht inkl. Absagegründe, Strafen zuweisen
+  - Spieler: Eigene Termine beantworten, eigene Strafen und Zahlungen einsehen
+  - Kassenwart: Zahlungen verbuchen, PayPal-Empfänger verwalten, Kassenstand pflegen
 
 
+MVP Definition (für erste AI-Implementierung)
 
+In Scope (MVP):
+- Login + RBAC für Admin/Trainer/Spieler/Kassenwart
+- Trainings-/Spielkalender inkl. Zu-/Absage mit Pflichtgrund bei Absage
+- Strafenkatalog + Strafen zuweisen + offene/bezahlte Strafen pro Spieler
+- Zahlungsverbuchung (inkl. PayPal-Referenz) und Kassenstand
+- Basis-Statistiken zu Teilnahme und Strafen
+- Ligatabelle aus externer Quelle (Scraping) mit Hervorhebung Union Schwand
 
+Out of Scope (nicht im ersten MVP):
+- Mobile App
+- KI-Prognosen/Empfehlungen
+- Mehrmandantenfähigkeit (mehrere Teams)
+- Vollautomatische externe Buchhaltungsschnittstellen
+
+Akzeptanzkriterien (MVP):
+- Spieler kann Termin zu-/absagen; Absage ohne Grund ist nicht erlaubt.
+- Trainer kann alle Rückmeldungen und Absagegründe pro Termin einsehen.
+- Admin/Trainer kann Strafe anlegen; Spieler sieht nur eigene Strafen.
+- Zahlung markiert Strafen als bezahlt; offener Betrag wird korrekt neu berechnet.
+- Nicht berechtigte Rollen erhalten bei geschützten Aktionen eine Fehlermeldung (403).
+
+Offene fachliche Fragen vor AI-Umsetzung:
+- Sollen Trainer Zahlungen nur sehen oder auch selbst verbuchen dürfen?
+- Ist „Mannschaftsweite Gesamtübersicht“ für alle Spieler erlaubt oder nur aggregiert/ohne Namen?
+- Soll Webscraping der Tabelle im MVP zwingend live erfolgen oder reicht tägliche Synchronisation?
+- Welche Zahlungsflüsse sind für MVP verbindlich: nur PayPal-Link oder auch direkte PayPal-API-Callbacks?
 
 
