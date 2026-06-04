@@ -47,11 +47,13 @@ export class UsersController {
   @Post()
   @Roles('ADMIN')
   create(@Body() dto: CreateUserDto) {
-    const { roles, shirt_number, password, ...userData } = dto;
-    return this.usersService.create(
-      { ...userData, password_hash: password || 'Test1234!' },
-      roles || ['PLAYER'],
-    );
+    const { roles, shirt_number, password, birth_date, ...userData } = dto;
+    const userFields: Parameters<typeof this.usersService.create>[0] = {
+      ...userData,
+      password_hash: password || 'Test1234!',
+      ...(birth_date && { birth_date: new Date(birth_date) }),
+    };
+    return this.usersService.create(userFields, roles || ['PLAYER']);
   }
 
   @Put(':id')

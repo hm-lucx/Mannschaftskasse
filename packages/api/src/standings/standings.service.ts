@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
-interface StandingsRow {
+export interface StandingsRow {
   rank: number;
   team: string;
   played: number;
@@ -83,7 +83,7 @@ export class StandingsService {
         this.logger.warn('Standings scraper returned no rows — keeping cached data');
       }
     } catch (err) {
-      this.logger.error('Failed to fetch standings', err.message);
+      this.logger.error('Failed to fetch standings', err instanceof Error ? err.message : String(err));
     }
   }
 }
