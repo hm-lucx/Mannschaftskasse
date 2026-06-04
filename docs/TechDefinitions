@@ -173,7 +173,7 @@ A web platform for football team organization and team treasury management (atte
 
 1. **User**
    - PK: `id`
-   - Fields: first_name, last_name, email (unique), phone, address, birth_date, status, created_at
+   - Fields: first_name, last_name, email (unique), phone, address, birth_date, shirt_number, joined_at, status, created_at
 
 2. **Role**
    - PK: `id`
@@ -183,57 +183,47 @@ A web platform for football team organization and team treasury management (atte
    - PK: `id`
    - FK: user_id → User.id, role_id → Role.id
 
-4. **Team**
-   - PK: `id`
-   - Fields: name, season, is_active
-   *(Note: Single team architecture, this serves as global configuration)*
-
-5. **TeamMembership**
-   - PK: `id`
-   - FK: user_id
-   - Fields: joined_at, left_at, shirt_number
-
-6. **Event**
+4. **Event**
    - PK: `id`
    - FK: created_by_user_id
    - Fields: type (TRAINING/MATCH/OTHER), title, location, starts_at, response_deadline, is_cancelled
 
-7. **Participation**
+5. **Participation**
    - PK: `id`
    - FK: event_id, user_id
    - Fields: status (ACCEPTED/DECLINED/PENDING), decline_reason, responded_at
    - Constraint: unique(event_id, user_id)
 
-8. **FineCategory**
+6. **FineCategory**
    - PK: `id`
    - Fields: name, default_amount, is_active
 
-9. **Fine**
+7. **Fine**
    - PK: `id`
    - FK: user_id, fine_category_id, assigned_by_user_id, event_id (nullable)
    - Fields: amount, reason_note, assigned_at, due_date, status (OPEN/PAID/CANCELLED)
 
-10. **Payment**
+8. **Payment**
     - PK: `id`
     - FK: user_id
-    - Fields: amount, provider (MANUAL/PAYPAL_LINK), paid_at, status
+    - Fields: amount, method (CASH/BANK_TRANSFER/PAYPAL_ME), paid_at, status (PENDING_VERIFICATION/CONFIRMED)
 
-11. **FinePaymentLink**
+9. **FinePaymentLink**
     - PK: `id`
     - FK: fine_id, payment_id
     - Fields: allocated_amount
 
-12. **CashLedgerEntry**
+10. **CashLedgerEntry**
     - PK: `id`
     - FK: created_by_user_id, payment_id (nullable)
     - Fields: type (INCOME/EXPENSE), category, amount, occurred_at, note
 
-13. **Notification**
+11. **Notification**
     - PK: `id`
     - FK: user_id
     - Fields: type, channel, title, body, is_read, created_at
 
-14. **AuditLog**
+12. **AuditLog**
     - PK: `id`
     - FK: actor_user_id
     - Fields: action, entity_name, entity_id, before_json, after_json, created_at, ip_hash
@@ -254,10 +244,9 @@ A web platform for football team organization and team treasury management (atte
 - `DELETE /api/users/{id}` (ADMIN, soft delete)
 - `GET /api/roles` (ADMIN)
 
-### Teams
-- `GET /api/team` (all authenticated)
-- `PUT /api/team` (ADMIN)
-- `GET /api/team/members` (all authenticated)
+### Global Settings
+- `GET /api/settings` (all authenticated)
+- `PUT /api/settings` (ADMIN)
 
 ### Events & Attendance
 - `GET /api/events` (all authenticated)
@@ -279,7 +268,8 @@ A web platform for football team organization and team treasury management (atte
 
 ### Payments & Treasury
 - `GET /api/payments` (ADMIN/TREASURER; player sees own)
-- `POST /api/payments` (TREASURER)
+- `POST /api/payments` (TREASURER or PLAYER submitting proof)
+- `GET /api/payments/{id}/link` (generates PayPal.Me link)
 - `GET /api/ledger` (ADMIN/TREASURER)
 - `POST /api/ledger` (TREASURER)
 
@@ -291,7 +281,7 @@ A web platform for football team organization and team treasury management (atte
 - `GET /api/reports/attendance` (COACH/ADMIN)
 - `GET /api/reports/fines` (COACH/ADMIN/TREASURER)
 - `GET /api/reports/export` (ADMIN/TREASURER)
-- `GET /api/standings/current` (authenticated)
+- `GET /api/reports/standings` (authenticated, triggers live scrape)
 
 #### Validation and Security Rules
 - Request schema validation (DTO + class-validator/Zod)
